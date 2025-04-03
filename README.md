@@ -1,3 +1,5 @@
+Article with explanation in russian: https://habr.com/ru/articles/858040/
+
 How to reproduce:
 
 1. Create Order and add milestones to it:
