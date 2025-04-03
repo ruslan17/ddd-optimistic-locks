@@ -1,5 +1,7 @@
 package com.habr.dddoptimisticlocks.model;
 
+import com.habr.dddoptimisticlocks.ddd.AggregateMember;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,13 +20,12 @@ import lombok.experimental.FieldNameConstants;
 @FieldNameConstants
 @Getter
 @Setter(value = AccessLevel.PROTECTED)
-public class Milestone {
+public class Milestone extends com.habr.dddoptimisticlocks.ddd.Entity<Integer> implements
+    AggregateMember<Integer, Order> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    // some fields
 
     private Integer index;
 
@@ -32,11 +33,20 @@ public class Milestone {
 
     private LocalDate endDate;
 
+    @Column(name = "order_id")
+    private Integer orderId;
+
     protected Milestone(Integer index, LocalDate startDate, LocalDate endDate) {
 
         this.index = index;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    @Override
+    public Integer getRootId() {
+
+        return orderId;
     }
 }
 

@@ -1,0 +1,18 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: ddd-optimistic-locks
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:15432/test_db
+    username: skymind_user
+    password: 123456
+  flyway:
+    baseline-on-migrate: true
+#  jpa:
+#    database: postgresql
+  sql:
+    init:
+      platform: postgres

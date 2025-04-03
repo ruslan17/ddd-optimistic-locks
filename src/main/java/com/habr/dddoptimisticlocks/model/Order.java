@@ -9,11 +9,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 
@@ -21,6 +23,8 @@ import lombok.experimental.FieldNameConstants;
 @FieldNameConstants
 @Getter
 @Setter(AccessLevel.PROTECTED)
+@NoArgsConstructor
+@Table(name = "\"order\"")
 public class Order extends AggregateRoot<Integer> {
 
     @Id
@@ -33,7 +37,12 @@ public class Order extends AggregateRoot<Integer> {
     @JoinColumn(name = "order_id")
     private List<Milestone> milestones = new ArrayList<>();
 
-    // работает нормально - обновляет версию агрегейт рута, тк мы меняем лист и хибернейт это понимает
+    public Order(String name) {
+
+        this.name = name;
+    }
+
+    // Works fine – updates the aggregate root version because we are modifying the list, and Hibernate understands this.
     public void addMilestone(MilestoneDTO milestone) {
 
         // some validations
@@ -41,7 +50,7 @@ public class Order extends AggregateRoot<Integer> {
         milestones.add(new Milestone(milestone.index(), milestone.startDate(), milestone.endDate()));
     }
 
-    // работает нормально - обновляет версию агрегейт рута, тк мы меняем лист и хибернейт это понимает
+    // Works fine – updates the aggregate root version because we are modifying the list, and Hibernate understands this.
     public void removeMilestone(Integer milestoneId) {
 
         // some validations
@@ -49,7 +58,7 @@ public class Order extends AggregateRoot<Integer> {
         milestones.removeIf(milestone -> milestone.getId().equals(milestoneId));
     }
 
-    // НЕ обновляет версию рута
+    // Does NOT update the root version.
     public void updateMilestone(Integer milestoneId, LocalDate startDate, LocalDate endDate) {
 
         validatePeriod(milestoneId, startDate, endDate);
@@ -63,7 +72,7 @@ public class Order extends AggregateRoot<Integer> {
             });
     }
 
-    // для наглядности мы игнорируем корнер кейсы
+    // For simplicity, we are ignoring corner cases.
     private void validatePeriod(Integer milestoneId, LocalDate startDate, LocalDate endDate) {
 
         var milestone = milestones
